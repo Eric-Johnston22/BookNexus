@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>CST_323_MilestoneApp</RootNamespace>
+    <RootNamespace>BookNexus</RootNamespace>
     <UserSecretsId>2db492a3-2f3d-4b4b-85eb-e48099a7acc6</UserSecretsId>
   </PropertyGroup>
 
