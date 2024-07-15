@@ -1,0 +1,148 @@
+﻿@model BookNexus.Models.Book
+
+@{
+    ViewBag.Title = "Book Details";
+}
+
+<h2>Book Details</h2>
+
+<div>
+    <h4>@Model.Title</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Title
+        </dd>
+
+        <dt class="col-sm-2">
+            Author
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Author.Name
+        </dd>
+
+        <dt class="col-sm-2">
+            ISBN
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ISBN
+        </dd>
+
+        <dt class="col-sm-2">
+            Published Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Published_date.ToShortDateString()
+        </dd>
+
+        <dt class="col-sm-2">
+            Genre
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Genre
+        </dd>
+    </dl>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            @Html.Partial("_AddToWantToRead", Model.Book_id)
+            @Html.Partial("_AddToCurrentlyReading", Model.Book_id)
+            @Html.Partial("_AddToHaveRead", Model.Book_id)
+        </div>
+    }
+    else
+    {
+        <p>Please <a href="@Url.Action("Login", "User")">login</a> to add this book to your lists.</p>
+    }
+
+    <div id="message-container"></div>
+
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // AJAX for adding books to Want to Read
+        $('#wantToReadForm').submit(function (event) {
+            event.preventDefault();
+            var bookId = $(this).data('book-id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToWantToRead", "Book")',
+                data: { bookId: bookId },
+                success: function (response) {
+                    console.log("Response from Want to Read:", response);
+                    var messageContainer = $('#message-container');
+                    messageContainer.html('');
+                    var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
+                    messageContainer.append(messageHtml);
+                    setTimeout(function () {
+                        messageContainer.children().fadeOut('slow', function () {
+                            $(this).remove();
+                        });
+                    }, 6000); // 6000 milliseconds = 6 seconds
+                },
+                error: function () {
+                    alert('Error adding book to Want To Read list.');
+                }
+            });
+        });
+
+        // AJAX for adding books to Currently Reading
+        $('#currentlyReadingForm').submit(function (event) {
+            event.preventDefault();
+            var bookId = $(this).data('book-id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToCurrentlyReading", "Book")',
+                data: { bookId: bookId },
+                success: function (response) {
+                    console.log("Response from Currently Reading:", response);
+                    var messageContainer = $('#message-container');
+                    messageContainer.html('');
+                    var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
+                    messageContainer.append(messageHtml);
+                    setTimeout(function () {
+                        messageContainer.children().fadeOut('slow', function () {
+                            $(this).remove();
+                        });
+                    }, 6000); // 6000 milliseconds = 6 seconds
+                },
+                error: function () {
+                    alert('Error adding book to Currently Reading list.');
+                }
+            });
+        });
+
+        // AJAX for adding books to Have Read
+        $('#haveReadForm').submit(function (event) {
+            event.preventDefault();
+            var bookId = $(this).data('book-id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToHaveRead", "Book")',
+                data: { bookId: bookId },
+                success: function (response) {
+                    console.log("Response from Have Read:", response);
+                    var messageContainer = $('#message-container');
+                    messageContainer.html('');
+                    var messageHtml = `<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}" role="alert">${response.message}</div>`;
+                    messageContainer.append(messageHtml);
+                    setTimeout(function () {
+                        messageContainer.children().fadeOut('slow', function () {
+                            $(this).remove();
+                        });
+                    }, 6000); // 6000 milliseconds = 6 seconds
+                },
+                error: function () {
+                    alert('Error adding book to Have Read list.');
+                }
+            });
+        });
+    });
+</script>
